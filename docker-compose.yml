@@ -1,0 +1,27 @@
+version: '3'
+services:
+  mysql-standalonne:
+    restart: always
+    container_name: mysql-standalonne
+    image: 'mysql:8.0'
+    environment:
+      MYSQL_ROOT_PASSWORD: zheng02
+      MYSQL_DATABASE: dockerdb
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '3307:3306'
+  learn_docker:
+    image: learn_docker
+    ports:
+      - '8091:8091'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-standalonne:3306/dockerdb
+      SPRING_DATASOURCE_USERNAME: 'root'
+      SPRING_DATASOURCE_PASSWORD: 'zheng02'
+      SPRING_JPA_HIBERNATE_DIALECT: 'org.hibernate.dialect.MySQL5InnoDBDialect'
+      SPRING_JPA_HIBERNATE_DDL-AUTO: 'update'
+    build:
+      context: "./"
+      dockerfile: 'Dockerfile'
+    depends_on:
+      - mysql-standalonne
